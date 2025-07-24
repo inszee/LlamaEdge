@@ -27,7 +27,6 @@ pub mod vicuna;
 pub mod wizard;
 pub mod zephyr;
 
-use crate::{error::Result, PromptTemplateType};
 use baichuan::*;
 use belle::*;
 use chatml::*;
@@ -50,13 +49,16 @@ use nvidia::{NemotronChatPrompt, NemotronToolPrompt};
 use octopus::*;
 use openchat::*;
 use phi::*;
-use qwen::{Qwen2vlPrompt, Qwen3NoThinkPrompt};
+use qwen::{Qwen2vlPrompt, Qwen3NoThinkPrompt,Qwen3v06bThinkPrompt,Qwen3v06bNoThinkPrompt};
 use seed::{SeedInstructPrompt, SeedReasoningPrompt};
 use smol::SmolvlPrompt;
 use solar::*;
 use vicuna::*;
 use wizard::*;
 use zephyr::*;
+use crate::error::Result;
+
+use crate::PromptTemplateType;
 
 /// Trait for building prompts for chat completions.
 #[enum_dispatch::enum_dispatch]
@@ -128,6 +130,8 @@ pub enum ChatPrompt {
     MegrezPrompt,
     Qwen2vlPrompt,
     Qwen3NoThinkPrompt,
+    Qwen3v06bNoThinkPrompt,
+    Qwen3v06bThinkPrompt,
     ExaoneDeepChatPrompt,
     ExaoneChatPrompt,
     SeedInstructPrompt,
@@ -228,6 +232,8 @@ impl From<PromptTemplateType> for ChatPrompt {
             PromptTemplateType::Megrez => ChatPrompt::MegrezPrompt(MegrezPrompt),
             PromptTemplateType::Qwen2vl => ChatPrompt::Qwen2vlPrompt(Qwen2vlPrompt),
             PromptTemplateType::Qwen3NoThink => ChatPrompt::Qwen3NoThinkPrompt(Qwen3NoThinkPrompt),
+            PromptTemplateType::Qwen306BNoThink =>  ChatPrompt::Qwen3v06bNoThinkPrompt(Qwen3v06bNoThinkPrompt),
+            PromptTemplateType::Qwen306BThink =>  ChatPrompt::Qwen3v06bThinkPrompt(Qwen3v06bThinkPrompt),
             PromptTemplateType::ExaoneDeepChat => {
                 ChatPrompt::ExaoneDeepChatPrompt(ExaoneDeepChatPrompt)
             }

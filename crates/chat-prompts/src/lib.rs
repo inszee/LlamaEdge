@@ -120,6 +120,10 @@ pub enum PromptTemplateType {
     Qwen2vl,
     #[value(name = "qwen3-no-think")]
     Qwen3NoThink,
+    #[value(name = "qwen3-06b-no-think")]
+    Qwen306BNoThink,
+    #[value(name = "qwen3-06b-think")]
+    Qwen306BThink,
     #[value(name = "exaone-deep-chat")]
     ExaoneDeepChat,
     #[value(name = "exaone-chat")]
@@ -173,6 +177,8 @@ impl PromptTemplateType {
             | PromptTemplateType::Megrez
             | PromptTemplateType::Qwen2vl
             | PromptTemplateType::Qwen3NoThink
+            | PromptTemplateType::Qwen306BNoThink
+            | PromptTemplateType::Qwen306BThink
             | PromptTemplateType::MistralSmallChat
             | PromptTemplateType::MistralSmallTool
             | PromptTemplateType::ExaoneDeepChat
@@ -346,6 +352,8 @@ impl std::fmt::Display for PromptTemplateType {
             PromptTemplateType::Megrez => write!(f, "megrez"),
             PromptTemplateType::Qwen2vl => write!(f, "qwen2-vision"),
             PromptTemplateType::Qwen3NoThink => write!(f, "qwen3-no-think"),
+            PromptTemplateType::Qwen306BNoThink => write!(f, "qwen3-06b-no-think"),
+            PromptTemplateType::Qwen306BThink => write!(f, "qwen3-06b-think"),
             PromptTemplateType::ExaoneDeepChat => write!(f, "exaone-deep-chat"),
             PromptTemplateType::ExaoneChat => write!(f, "exaone-chat"),
             PromptTemplateType::SeedInstruct => write!(f, "seed-instruct"),
