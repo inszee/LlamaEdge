@@ -682,28 +682,27 @@ impl BuildChatPrompt for Qwen3v06bThinkPrompt {
         }
 
         // system prompt
-        let system_prompt = match messages[0] {
+        let mut history_prompt = match messages[0] {
             ChatCompletionRequestMessage::System(ref message) => self.create_system_prompt(message),
             _ => String::from("<|im_start|>system\nYou are a helpful assistant. Answer questions as concisely as possible.<|im_end|>"),
         };
 
         // append user/assistant messages
-        let mut prompt = String::new();
         for message in messages {
             match message {
                 ChatCompletionRequestMessage::User(message) => {
-                    prompt = self.append_user_message(&prompt, &system_prompt, message);
+                    history_prompt = self.append_user_message(&history_prompt, r#""#, message);
                 }
                 ChatCompletionRequestMessage::Assistant(message) => {
-                    prompt = self.append_assistant_message(&prompt, message)?;
+                    history_prompt = self.append_assistant_message(&history_prompt, message)?;
                 }
                 _ => continue,
             }
         }
 
-        prompt.push_str("\n<|im_start|>assistant\n");
+        history_prompt.push_str("\n<|im_start|>assistant\n");
 
-        Ok(prompt)
+        Ok(history_prompt)
     }
 
     fn build_with_tools(
@@ -716,7 +715,7 @@ impl BuildChatPrompt for Qwen3v06bThinkPrompt {
         }
 
         // system prompt
-        let system_prompt = match messages[0] {
+        let mut history_prompt = match messages[0] {
             ChatCompletionRequestMessage::System(ref message) => match tools {
                 Some(tools) if !tools.is_empty() => {
                     let available_tools = serde_json::to_string(tools).unwrap();
@@ -758,24 +757,24 @@ You are provided with function signatures within <tools></tools> XML tags:"#;
         };
 
         // append user/assistant messages
-        let mut prompt = String::new();
         for message in messages {
+            // FIXME: the first time ,ChatCompletionRequestMessage::User is  ok and prompt is empty
             match message {
                 ChatCompletionRequestMessage::User(message) => {
-                    prompt = self.append_user_message(&prompt, &system_prompt, message);
+                    history_prompt = self.append_user_message(&history_prompt, r#""#, message);
                 }
                 ChatCompletionRequestMessage::Assistant(message) => {
-                    prompt = self.append_assistant_message(&prompt, message)?;
+                    history_prompt = self.append_assistant_message(&history_prompt, message)?;
                 }
                 ChatCompletionRequestMessage::Tool(message) => {
-                    prompt = self.append_tool_message(&prompt, message);
+                    history_prompt = self.append_tool_message(&history_prompt, message);
                 }
                 _ => continue,
             }
         }
 
-        prompt.push_str("\n<|im_start|>assistant\n");
+        history_prompt.push_str("\n<|im_start|>assistant\n");
 
-        Ok(prompt)
+        Ok(history_prompt)
     }
 }
